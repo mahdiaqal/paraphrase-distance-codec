@@ -1,0 +1,13 @@
+# Security boundary
+
+The authored original is public transformation data, not a certified external fact. A creator cannot replace it; contract/creator/nonce and full input-root binding prevent substitution. Forging is deliberately permissionless. Caller/attempt nonce bindings retain agreed rejected reports and prevent replay. Generation/model failures write nothing. Publication is immutable; no author approval, reset or overwrite exists.
+
+Independent validators read the complete original and exact generated sentences, audit every critical fidelity dimension and genuine natural rephrasing, and reconstruct the full report including all six edit distances. Exact comparison—not JSON shape, a claimed hash or a confidence interval—controls publication. FAIL/UNKNOWN in any of sixteen positions prevents a usable codebook. Exact original copies cannot publish; padding and formatting-only tricks fail the semantic rephrasing audit. Validators do not generate a different alphabet because they can judge the exact open-ended candidate against the same complete input.
+
+All consumers require BOTH the original input root and the exact codebook root. Codeword ordering determines symbols, so a source root alone is insufficient. Wrong-book, wrong-source or wrong-alphabet contexts fail closed. Decoder ambiguity also fails closed, even though a correctly published spacing-five alphabet has disjoint radius-two balls.
+
+The correction claim is mathematical and conditional on the printable-ASCII alphabet and at most two insertions/deletions/substitutions. More errors can land near another codeword. The codec is not cryptography, authentication, proof of message origin, secrecy, steganographic undetectability or fidelity of damaged text. Unicode/control characters are outside the supported channel.
+
+Semantic preservation is independently audited but probabilistic. Models may agree on a wrong paraphrase, omit an actor or condition, or follow injected instructions despite explicit data boundaries. All sixteen PASS labels do not prove formal semantic equivalence or truth of the original. Inspect actual artifacts. Text is public and must not contain confidential material.
+
+Four codewords of at most 160 characters bound pairwise and decoder work. No arbitrary code executes and no source network request, token/native transfer, approval or escrow occurs. AI may fail to find a valid alphabet or validators may disagree indefinitely; no fund is locked. Use dedicated native encrypted gasless StudioNet test accounts. Never export keys, commit credentials or blindly rebroadcast an uncertain send. This contract has not received an independent production audit.
