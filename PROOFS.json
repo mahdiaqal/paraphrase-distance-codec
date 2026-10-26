@@ -1,0 +1,721 @@
+{
+  "network": "studionet",
+  "chain_id": 61999,
+  "source_commit": "c5d07d0cfabac63c731a5621dfd1f064cd9110f3",
+  "accounts": [
+    {
+      "name": "studio-proof-deployer",
+      "address": "0x7a413BB4AB62E31d62d4cD9efC8C8a8Dae37FB42"
+    },
+    {
+      "name": "fairresolve-demo",
+      "address": "0x34346773a22564cbcc5F1D67D1c1F9f196DaEA35"
+    }
+  ],
+  "fixtures": [
+    {
+      "name": "approval",
+      "nonce": "channel",
+      "original": "Rin must get written approval before opening the crate.",
+      "anchors": [
+        "Rin must get written approval",
+        "opening the crate"
+      ],
+      "creator": 0,
+      "forger": 1
+    },
+    {
+      "name": "quantity",
+      "nonce": "channel",
+      "original": "The sample contains exactly three copper disks.",
+      "anchors": [
+        "exactly three",
+        "copper disks"
+      ],
+      "creator": 1,
+      "forger": 0
+    }
+  ],
+  "transactions": [
+    {
+      "step": "deploy",
+      "signer": "0x7a413BB4AB62E31d62d4cD9efC8C8a8Dae37FB42",
+      "expected": "SUCCESS",
+      "cli_arguments": [
+        "deploy",
+        "--contract",
+        "contracts/ParaphraseDistanceCodec.py"
+      ],
+      "nonce_before": "0x1c4",
+      "verified": true,
+      "hash": "0xdca60a391b9735ba6be7bfc23e57501496f72d21b5903faf8200cca6a8d50ce4",
+      "cli_exit": 0,
+      "address": "0xf359D218806d2273E5D76b7cF7a0d9cb6FFADF5a",
+      "status": "FINALIZED",
+      "execution": "SUCCESS",
+      "consensus": "MAJORITY_AGREE",
+      "committed": true,
+      "leader_only": false,
+      "initial_validators": 5,
+      "agree_votes": 3,
+      "idle_votes": 2,
+      "disagree_votes": 0,
+      "validator_execution_seen": true
+    },
+    {
+      "step": "create-approval",
+      "signer": "0x7a413BB4AB62E31d62d4cD9efC8C8a8Dae37FB42",
+      "expected": "SUCCESS",
+      "cli_arguments": [
+        "write",
+        "0xf359D218806d2273E5D76b7cF7a0d9cb6FFADF5a",
+        "create",
+        "--args",
+        "channel",
+        "Rin must get written approval before opening the crate.",
+        "Rin must get written approval",
+        "opening the crate"
+      ],
+      "nonce_before": "0x1c5",
+      "verified": true,
+      "hash": "0x35849ae1a0df0ec1f78faf9f46cd5ccc20dd4f090bc7f57208d6bf8a395d5db8",
+      "cli_exit": 0,
+      "address": "0xf359D218806d2273E5D76b7cF7a0d9cb6FFADF5a",
+      "status": "FINALIZED",
+      "execution": "SUCCESS",
+      "consensus": "MAJORITY_AGREE",
+      "committed": true,
+      "leader_only": false,
+      "initial_validators": 5,
+      "agree_votes": 5,
+      "idle_votes": 0,
+      "disagree_votes": 0,
+      "validator_execution_seen": true
+    },
+    {
+      "step": "forge-approval",
+      "signer": "0x34346773a22564cbcc5F1D67D1c1F9f196DaEA35",
+      "expected": "SUCCESS",
+      "cli_arguments": [
+        "write",
+        "0xf359D218806d2273E5D76b7cF7a0d9cb6FFADF5a",
+        "forge",
+        "--args",
+        "d73944126e7712b83108d4df046eaf61c6a1d8f7347f53edcbe8da69e88675c6",
+        "2cdbf042f9fe3d87f67c96700b419876c0eb571c22011a253976c35476728db4",
+        "first"
+      ],
+      "nonce_before": "0x31",
+      "verified": true,
+      "hash": "0x6bceb6bb51cda701d221222eaf71448ffa513e183d062cd44e45774591603bab",
+      "cli_exit": 0,
+      "address": "0xf359D218806d2273E5D76b7cF7a0d9cb6FFADF5a",
+      "status": "FINALIZED",
+      "execution": "SUCCESS",
+      "consensus": "MAJORITY_AGREE",
+      "committed": true,
+      "leader_only": false,
+      "initial_validators": 5,
+      "agree_votes": 3,
+      "idle_votes": 1,
+      "disagree_votes": 1,
+      "validator_execution_seen": true
+    },
+    {
+      "step": "immutable-alphabet",
+      "signer": "0x7a413BB4AB62E31d62d4cD9efC8C8a8Dae37FB42",
+      "expected": "ERROR",
+      "cli_arguments": [
+        "write",
+        "0xf359D218806d2273E5D76b7cF7a0d9cb6FFADF5a",
+        "forge",
+        "--args",
+        "d73944126e7712b83108d4df046eaf61c6a1d8f7347f53edcbe8da69e88675c6",
+        "2cdbf042f9fe3d87f67c96700b419876c0eb571c22011a253976c35476728db4",
+        "again"
+      ],
+      "nonce_before": "0x1c6",
+      "verified": true,
+      "expected_message": "Codebook already published",
+      "hash": "0x5330c971cf7c08da97687a9c268c92db6f7c828f14310c4d7fae929be7cb806a",
+      "cli_exit": 0,
+      "address": "0xf359D218806d2273E5D76b7cF7a0d9cb6FFADF5a",
+      "status": "FINALIZED",
+      "execution": "ERROR",
+      "consensus": "MAJORITY_AGREE",
+      "expected_error_matched": true,
+      "committed": false,
+      "leader_only": false,
+      "initial_validators": 5,
+      "agree_votes": 3,
+      "idle_votes": 2,
+      "disagree_votes": 0,
+      "validator_execution_seen": true
+    },
+    {
+      "step": "creator-nonce-replay",
+      "signer": "0x7a413BB4AB62E31d62d4cD9efC8C8a8Dae37FB42",
+      "expected": "ERROR",
+      "cli_arguments": [
+        "write",
+        "0xf359D218806d2273E5D76b7cF7a0d9cb6FFADF5a",
+        "create",
+        "--args",
+        "channel",
+        "The sample contains exactly three copper disks.",
+        "exactly three",
+        "copper disks"
+      ],
+      "nonce_before": "0x1c7",
+      "verified": true,
+      "expected_message": "Nonce already used",
+      "hash": "0x67b9773ddd29a739d63a973f64da7edba00afbc399bd42035414b3cef0466a1e",
+      "cli_exit": 0,
+      "address": "0xf359D218806d2273E5D76b7cF7a0d9cb6FFADF5a",
+      "status": "FINALIZED",
+      "execution": "ERROR",
+      "consensus": "MAJORITY_AGREE",
+      "expected_error_matched": true,
+      "committed": false,
+      "leader_only": false,
+      "initial_validators": 5,
+      "agree_votes": 4,
+      "idle_votes": 1,
+      "disagree_votes": 0,
+      "validator_execution_seen": true
+    },
+    {
+      "step": "create-quantity",
+      "signer": "0x34346773a22564cbcc5F1D67D1c1F9f196DaEA35",
+      "expected": "SUCCESS",
+      "cli_arguments": [
+        "write",
+        "0xf359D218806d2273E5D76b7cF7a0d9cb6FFADF5a",
+        "create",
+        "--args",
+        "channel",
+        "The sample contains exactly three copper disks.",
+        "exactly three",
+        "copper disks"
+      ],
+      "nonce_before": "0x32",
+      "verified": true,
+      "hash": "0xcff00054f34efbbc2235a5d9a86a4dc4eea9439e132cd2d3094bff4924fee50d",
+      "cli_exit": 0,
+      "address": "0xf359D218806d2273E5D76b7cF7a0d9cb6FFADF5a",
+      "status": "FINALIZED",
+      "execution": "SUCCESS",
+      "consensus": "MAJORITY_AGREE",
+      "committed": true,
+      "leader_only": false,
+      "initial_validators": 5,
+      "agree_votes": 3,
+      "idle_votes": 2,
+      "disagree_votes": 0,
+      "validator_execution_seen": true
+    },
+    {
+      "step": "cross-book-input",
+      "signer": "0x7a413BB4AB62E31d62d4cD9efC8C8a8Dae37FB42",
+      "expected": "ERROR",
+      "cli_arguments": [
+        "write",
+        "0xf359D218806d2273E5D76b7cF7a0d9cb6FFADF5a",
+        "forge",
+        "--args",
+        "e264b74cc577e23b569e3aa55820b7f4d704010d4897c3c6c0108e02c406df89",
+        "2cdbf042f9fe3d87f67c96700b419876c0eb571c22011a253976c35476728db4",
+        "wrong-context"
+      ],
+      "nonce_before": "0x1c8",
+      "verified": true,
+      "expected_message": "Input root mismatch",
+      "hash": "0x6b42d35e8491f4f47864fff457e15ac603ee3851a145c2769e48334e2ae7569e",
+      "cli_exit": 0,
+      "address": "0xf359D218806d2273E5D76b7cF7a0d9cb6FFADF5a",
+      "status": "FINALIZED",
+      "execution": "ERROR",
+      "consensus": "MAJORITY_AGREE",
+      "expected_error_matched": true,
+      "committed": false,
+      "leader_only": false,
+      "initial_validators": 5,
+      "agree_votes": 3,
+      "idle_votes": 2,
+      "disagree_votes": 0,
+      "validator_execution_seen": true
+    },
+    {
+      "step": "forge-quantity",
+      "signer": "0x7a413BB4AB62E31d62d4cD9efC8C8a8Dae37FB42",
+      "expected": "SUCCESS",
+      "cli_arguments": [
+        "write",
+        "0xf359D218806d2273E5D76b7cF7a0d9cb6FFADF5a",
+        "forge",
+        "--args",
+        "e264b74cc577e23b569e3aa55820b7f4d704010d4897c3c6c0108e02c406df89",
+        "1fdcf62be98b01231d82705aba5482ce51bf879220c26f2cc7a13bfeec21861d",
+        "first"
+      ],
+      "nonce_before": "0x1c9",
+      "verified": true,
+      "hash": "0x5ccbe358b3eb82dfb41ba7e0c1c84d92cb1e5896facd0b0c27ccea28fbe7355b",
+      "cli_exit": 0,
+      "address": "0xf359D218806d2273E5D76b7cF7a0d9cb6FFADF5a",
+      "status": "FINALIZED",
+      "execution": "ERROR",
+      "consensus": "MAJORITY_DISAGREE",
+      "expected_error_matched": true,
+      "committed": false,
+      "leader_only": false,
+      "initial_validators": 5,
+      "agree_votes": 0,
+      "idle_votes": 1,
+      "disagree_votes": 4,
+      "validator_execution_seen": true,
+      "expected_unmet": true,
+      "failure_message": "[LLM_ERROR] Invalid generated codebook or audit",
+      "no_attempt_or_codebook": true
+    },
+    {
+      "step": "invalid-original",
+      "signer": "0x7a413BB4AB62E31d62d4cD9efC8C8a8Dae37FB42",
+      "expected": "ERROR",
+      "cli_arguments": [
+        "write",
+        "0xf359D218806d2273E5D76b7cF7a0d9cb6FFADF5a",
+        "create",
+        "--args",
+        "invalid",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "Rin must get written approval",
+        "opening the crate"
+      ],
+      "nonce_before": "0x1ca",
+      "verified": true,
+      "expected_message": "Invalid original proposition",
+      "hash": "0xf6d815f95c0fbe7ff96dcf49c0139cff779d1b2ad3c7e4f3f088ecb753b08696",
+      "cli_exit": 0,
+      "address": "0xf359D218806d2273E5D76b7cF7a0d9cb6FFADF5a",
+      "status": "FINALIZED",
+      "execution": "ERROR",
+      "consensus": "MAJORITY_AGREE",
+      "expected_error_matched": true,
+      "committed": false,
+      "leader_only": false,
+      "initial_validators": 5,
+      "agree_votes": 3,
+      "idle_votes": 2,
+      "disagree_votes": 0,
+      "validator_execution_seen": true
+    }
+  ],
+  "books": {
+    "approval": {
+      "anchors": [
+        "Rin must get written approval",
+        "opening the crate"
+      ],
+      "book_id": "d73944126e7712b83108d4df046eaf61c6a1d8f7347f53edcbe8da69e88675c6",
+      "contract": "0xf359D218806d2273E5D76b7cF7a0d9cb6FFADF5a",
+      "creator": "0x7a413BB4AB62E31d62d4cD9efC8C8a8Dae37FB42",
+      "input_root": "2cdbf042f9fe3d87f67c96700b419876c0eb571c22011a253976c35476728db4",
+      "nonce": "channel",
+      "original": "Rin must get written approval before opening the crate.",
+      "policy": "paraphrase-distance-codec-v2"
+    },
+    "quantity": {
+      "anchors": [
+        "exactly three",
+        "copper disks"
+      ],
+      "book_id": "e264b74cc577e23b569e3aa55820b7f4d704010d4897c3c6c0108e02c406df89",
+      "contract": "0xf359D218806d2273E5D76b7cF7a0d9cb6FFADF5a",
+      "creator": "0x34346773a22564cbcc5F1D67D1c1F9f196DaEA35",
+      "input_root": "1fdcf62be98b01231d82705aba5482ce51bf879220c26f2cc7a13bfeec21861d",
+      "nonce": "channel",
+      "original": "The sample contains exactly three copper disks.",
+      "policy": "paraphrase-distance-codec-v2"
+    }
+  },
+  "reports": {
+    "approval": {
+      "alphabet": "PRINTABLE_ASCII",
+      "attempt": {
+        "book_id": "d73944126e7712b83108d4df046eaf61c6a1d8f7347f53edcbe8da69e88675c6",
+        "caller": "0x34346773a22564cbcc5F1D67D1c1F9f196DaEA35",
+        "id": "072cdc1e0319d8c98673173e198549a407b5eaa972a71415d3bc61c9c706d550",
+        "nonce": "first"
+      },
+      "audits": [
+        [
+          "PASS",
+          "PASS",
+          "PASS",
+          "PASS"
+        ],
+        [
+          "PASS",
+          "PASS",
+          "PASS",
+          "PASS"
+        ],
+        [
+          "PASS",
+          "PASS",
+          "PASS",
+          "PASS"
+        ],
+        [
+          "PASS",
+          "PASS",
+          "PASS",
+          "PASS"
+        ]
+      ],
+      "book_id": "d73944126e7712b83108d4df046eaf61c6a1d8f7347f53edcbe8da69e88675c6",
+      "codewords": [
+        "Prior to opening the crate, it is mandatory that Rin must get written approval.",
+        "Rin must get written approval as a requirement preceding the act of opening the crate.",
+        "Before the process of opening the crate, Rin must get written approval first.",
+        "For the task of opening the crate, Rin must get written approval beforehand."
+      ],
+      "correction_radius": 2,
+      "dimensions": [
+        "EQUIVALENCE",
+        "CRITICAL_DETAILS",
+        "NO_ADDITIONS",
+        "NATURAL_REPHRASING"
+      ],
+      "input_root": "2cdbf042f9fe3d87f67c96700b419876c0eb571c22011a253976c35476728db4",
+      "minimum_distance": 18,
+      "pair_distances": [
+        {
+          "distance": 68,
+          "left": 0,
+          "right": 1
+        },
+        {
+          "distance": 40,
+          "left": 0,
+          "right": 2
+        },
+        {
+          "distance": 43,
+          "left": 0,
+          "right": 3
+        },
+        {
+          "distance": 66,
+          "left": 1,
+          "right": 2
+        },
+        {
+          "distance": 68,
+          "left": 1,
+          "right": 3
+        },
+        {
+          "distance": 18,
+          "left": 2,
+          "right": 3
+        }
+      ],
+      "policy": "paraphrase-distance-codec-v2",
+      "protected_phrases": {
+        "anchors": [
+          "Rin must get written approval",
+          "opening the crate"
+        ],
+        "expected_counts": [
+          1,
+          1
+        ],
+        "observed_counts": [
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            1
+          ]
+        ]
+      },
+      "root": "0cbd62a78aab4d5a4d1e61a157b1f2715657f2cfc7d2be93c2aca3ac70e6383d",
+      "status": "PUBLISHED",
+      "symbol_count": 4
+    }
+  },
+  "final_readback_verified": true,
+  "address": "0xf359D218806d2273E5D76b7cF7a0d9cb6FFADF5a",
+  "source": {
+    "address": "0xf359D218806d2273E5D76b7cF7a0d9cb6FFADF5a",
+    "source_match": true,
+    "sha256": "335bda1d3dbd18a41ac49be1526737d7d23c721be42110f85c41e1f86a051920"
+  },
+  "workflow_complete": true,
+  "native_roundtrips": [
+    {
+      "book": "approval",
+      "symbol": 0,
+      "kind": "exact",
+      "carrier": "Prior to opening the crate, it is mandatory that Rin must get written approval.",
+      "result": {
+        "canonical": "Prior to opening the crate, it is mandatory that Rin must get written approval.",
+        "codebook_root": "0cbd62a78aab4d5a4d1e61a157b1f2715657f2cfc7d2be93c2aca3ac70e6383d",
+        "distance": 0,
+        "input_root": "2cdbf042f9fe3d87f67c96700b419876c0eb571c22011a253976c35476728db4",
+        "status": "DECODED",
+        "symbol": 0
+      }
+    },
+    {
+      "book": "approval",
+      "symbol": 0,
+      "kind": "two_insertions",
+      "carrier": "!!Prior to opening the crate, it is mandatory that Rin must get written approval.",
+      "result": {
+        "canonical": "Prior to opening the crate, it is mandatory that Rin must get written approval.",
+        "codebook_root": "0cbd62a78aab4d5a4d1e61a157b1f2715657f2cfc7d2be93c2aca3ac70e6383d",
+        "distance": 2,
+        "input_root": "2cdbf042f9fe3d87f67c96700b419876c0eb571c22011a253976c35476728db4",
+        "status": "DECODED",
+        "symbol": 0
+      }
+    },
+    {
+      "book": "approval",
+      "symbol": 0,
+      "kind": "two_deletions",
+      "carrier": "ior to opening the crate, it is mandatory that Rin must get written approval.",
+      "result": {
+        "canonical": "Prior to opening the crate, it is mandatory that Rin must get written approval.",
+        "codebook_root": "0cbd62a78aab4d5a4d1e61a157b1f2715657f2cfc7d2be93c2aca3ac70e6383d",
+        "distance": 2,
+        "input_root": "2cdbf042f9fe3d87f67c96700b419876c0eb571c22011a253976c35476728db4",
+        "status": "DECODED",
+        "symbol": 0
+      }
+    },
+    {
+      "book": "approval",
+      "symbol": 0,
+      "kind": "two_substitutions",
+      "carrier": "~~ior to opening the crate, it is mandatory that Rin must get written approval.",
+      "result": {
+        "canonical": "Prior to opening the crate, it is mandatory that Rin must get written approval.",
+        "codebook_root": "0cbd62a78aab4d5a4d1e61a157b1f2715657f2cfc7d2be93c2aca3ac70e6383d",
+        "distance": 2,
+        "input_root": "2cdbf042f9fe3d87f67c96700b419876c0eb571c22011a253976c35476728db4",
+        "status": "DECODED",
+        "symbol": 0
+      }
+    },
+    {
+      "book": "approval",
+      "symbol": 1,
+      "kind": "exact",
+      "carrier": "Rin must get written approval as a requirement preceding the act of opening the crate.",
+      "result": {
+        "canonical": "Rin must get written approval as a requirement preceding the act of opening the crate.",
+        "codebook_root": "0cbd62a78aab4d5a4d1e61a157b1f2715657f2cfc7d2be93c2aca3ac70e6383d",
+        "distance": 0,
+        "input_root": "2cdbf042f9fe3d87f67c96700b419876c0eb571c22011a253976c35476728db4",
+        "status": "DECODED",
+        "symbol": 1
+      }
+    },
+    {
+      "book": "approval",
+      "symbol": 1,
+      "kind": "two_insertions",
+      "carrier": "!!Rin must get written approval as a requirement preceding the act of opening the crate.",
+      "result": {
+        "canonical": "Rin must get written approval as a requirement preceding the act of opening the crate.",
+        "codebook_root": "0cbd62a78aab4d5a4d1e61a157b1f2715657f2cfc7d2be93c2aca3ac70e6383d",
+        "distance": 2,
+        "input_root": "2cdbf042f9fe3d87f67c96700b419876c0eb571c22011a253976c35476728db4",
+        "status": "DECODED",
+        "symbol": 1
+      }
+    },
+    {
+      "book": "approval",
+      "symbol": 1,
+      "kind": "two_deletions",
+      "carrier": "n must get written approval as a requirement preceding the act of opening the crate.",
+      "result": {
+        "canonical": "Rin must get written approval as a requirement preceding the act of opening the crate.",
+        "codebook_root": "0cbd62a78aab4d5a4d1e61a157b1f2715657f2cfc7d2be93c2aca3ac70e6383d",
+        "distance": 2,
+        "input_root": "2cdbf042f9fe3d87f67c96700b419876c0eb571c22011a253976c35476728db4",
+        "status": "DECODED",
+        "symbol": 1
+      }
+    },
+    {
+      "book": "approval",
+      "symbol": 1,
+      "kind": "two_substitutions",
+      "carrier": "~~n must get written approval as a requirement preceding the act of opening the crate.",
+      "result": {
+        "canonical": "Rin must get written approval as a requirement preceding the act of opening the crate.",
+        "codebook_root": "0cbd62a78aab4d5a4d1e61a157b1f2715657f2cfc7d2be93c2aca3ac70e6383d",
+        "distance": 2,
+        "input_root": "2cdbf042f9fe3d87f67c96700b419876c0eb571c22011a253976c35476728db4",
+        "status": "DECODED",
+        "symbol": 1
+      }
+    },
+    {
+      "book": "approval",
+      "symbol": 2,
+      "kind": "exact",
+      "carrier": "Before the process of opening the crate, Rin must get written approval first.",
+      "result": {
+        "canonical": "Before the process of opening the crate, Rin must get written approval first.",
+        "codebook_root": "0cbd62a78aab4d5a4d1e61a157b1f2715657f2cfc7d2be93c2aca3ac70e6383d",
+        "distance": 0,
+        "input_root": "2cdbf042f9fe3d87f67c96700b419876c0eb571c22011a253976c35476728db4",
+        "status": "DECODED",
+        "symbol": 2
+      }
+    },
+    {
+      "book": "approval",
+      "symbol": 2,
+      "kind": "two_insertions",
+      "carrier": "!!Before the process of opening the crate, Rin must get written approval first.",
+      "result": {
+        "canonical": "Before the process of opening the crate, Rin must get written approval first.",
+        "codebook_root": "0cbd62a78aab4d5a4d1e61a157b1f2715657f2cfc7d2be93c2aca3ac70e6383d",
+        "distance": 2,
+        "input_root": "2cdbf042f9fe3d87f67c96700b419876c0eb571c22011a253976c35476728db4",
+        "status": "DECODED",
+        "symbol": 2
+      }
+    },
+    {
+      "book": "approval",
+      "symbol": 2,
+      "kind": "two_deletions",
+      "carrier": "fore the process of opening the crate, Rin must get written approval first.",
+      "result": {
+        "canonical": "Before the process of opening the crate, Rin must get written approval first.",
+        "codebook_root": "0cbd62a78aab4d5a4d1e61a157b1f2715657f2cfc7d2be93c2aca3ac70e6383d",
+        "distance": 2,
+        "input_root": "2cdbf042f9fe3d87f67c96700b419876c0eb571c22011a253976c35476728db4",
+        "status": "DECODED",
+        "symbol": 2
+      }
+    },
+    {
+      "book": "approval",
+      "symbol": 2,
+      "kind": "two_substitutions",
+      "carrier": "~~fore the process of opening the crate, Rin must get written approval first.",
+      "result": {
+        "canonical": "Before the process of opening the crate, Rin must get written approval first.",
+        "codebook_root": "0cbd62a78aab4d5a4d1e61a157b1f2715657f2cfc7d2be93c2aca3ac70e6383d",
+        "distance": 2,
+        "input_root": "2cdbf042f9fe3d87f67c96700b419876c0eb571c22011a253976c35476728db4",
+        "status": "DECODED",
+        "symbol": 2
+      }
+    },
+    {
+      "book": "approval",
+      "symbol": 3,
+      "kind": "exact",
+      "carrier": "For the task of opening the crate, Rin must get written approval beforehand.",
+      "result": {
+        "canonical": "For the task of opening the crate, Rin must get written approval beforehand.",
+        "codebook_root": "0cbd62a78aab4d5a4d1e61a157b1f2715657f2cfc7d2be93c2aca3ac70e6383d",
+        "distance": 0,
+        "input_root": "2cdbf042f9fe3d87f67c96700b419876c0eb571c22011a253976c35476728db4",
+        "status": "DECODED",
+        "symbol": 3
+      }
+    },
+    {
+      "book": "approval",
+      "symbol": 3,
+      "kind": "two_insertions",
+      "carrier": "!!For the task of opening the crate, Rin must get written approval beforehand.",
+      "result": {
+        "canonical": "For the task of opening the crate, Rin must get written approval beforehand.",
+        "codebook_root": "0cbd62a78aab4d5a4d1e61a157b1f2715657f2cfc7d2be93c2aca3ac70e6383d",
+        "distance": 2,
+        "input_root": "2cdbf042f9fe3d87f67c96700b419876c0eb571c22011a253976c35476728db4",
+        "status": "DECODED",
+        "symbol": 3
+      }
+    },
+    {
+      "book": "approval",
+      "symbol": 3,
+      "kind": "two_deletions",
+      "carrier": "r the task of opening the crate, Rin must get written approval beforehand.",
+      "result": {
+        "canonical": "For the task of opening the crate, Rin must get written approval beforehand.",
+        "codebook_root": "0cbd62a78aab4d5a4d1e61a157b1f2715657f2cfc7d2be93c2aca3ac70e6383d",
+        "distance": 2,
+        "input_root": "2cdbf042f9fe3d87f67c96700b419876c0eb571c22011a253976c35476728db4",
+        "status": "DECODED",
+        "symbol": 3
+      }
+    },
+    {
+      "book": "approval",
+      "symbol": 3,
+      "kind": "two_substitutions",
+      "carrier": "~~r the task of opening the crate, Rin must get written approval beforehand.",
+      "result": {
+        "canonical": "For the task of opening the crate, Rin must get written approval beforehand.",
+        "codebook_root": "0cbd62a78aab4d5a4d1e61a157b1f2715657f2cfc7d2be93c2aca3ac70e6383d",
+        "distance": 2,
+        "input_root": "2cdbf042f9fe3d87f67c96700b419876c0eb571c22011a253976c35476728db4",
+        "status": "DECODED",
+        "symbol": 3
+      }
+    }
+  ],
+  "consumer_rejections": [
+    {
+      "book": "approval",
+      "method": "encode",
+      "why": "cross-source root"
+    },
+    {
+      "book": "approval",
+      "method": "decode",
+      "why": "mismatched alphabet root"
+    },
+    {
+      "book": "approval",
+      "method": "encode",
+      "why": "invalid symbol"
+    },
+    {
+      "book": "approval",
+      "method": "decode",
+      "why": "oversized carrier"
+    },
+    {
+      "book": "approval",
+      "method": "decode",
+      "why": "unsupported alphabet"
+    }
+  ],
+  "contract_history_matched": true
+}

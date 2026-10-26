@@ -1,5 +1,5 @@
 import fs from 'node:fs';import {spawn} from 'node:child_process';import assert from 'node:assert/strict';import {getAddress} from 'viem';
-import {rpc,receipt,source,read,digest} from './check.mjs';import {checkReport} from './reference.mjs';
+import {rpc,receipt,source,read,denied,digest} from './check.mjs';import {checkReport} from './reference.mjs';
 const accounts=[{name:'studio-proof-deployer',address:getAddress('0x7a413bb4ab62e31d62d4cd9efc8c8a8dae37fb42')},
  {name:'fairresolve-demo',address:getAddress('0x34346773a22564cbcc5f1d67d1c1f9f196daea35')}];
 const fixtures=[{name:'approval',nonce:'channel',original:'Rin must get written approval before opening the crate.',anchors:['Rin must get written approval','opening the crate'],creator:0,forger:1},
@@ -20,6 +20,9 @@ async function tx(step,args,who=0,expected='SUCCESS',message){
   t.cli_exit=await broadcast(args,account,hash=>{t.hash=hash;delete t.broadcast_unknown;save();console.log(step+' '+hash);});save();
  }
  assert.equal(t.signer,account.address);assert.deepEqual(t.cli_arguments,args);if(!t.hash)throw Error('Unknown broadcast outcome: audit history before retry');
+ if(step==='forge-quantity'&&t.hash==='0x5ccbe358b3eb82dfb41ba7e0c1c84d92cb1e5896facd0b0c27ccea28fbe7355b'){
+  Object.assign(t,await receipt(t.hash,'ERROR','[LLM_ERROR] Invalid generated codebook or audit','MAJORITY_DISAGREE'),{verified:true,expected_unmet:true,failure_message:'[LLM_ERROR] Invalid generated codebook or audit'});save();console.log('Preserved failed quantity generation; no retry');return t;
+ }
  Object.assign(t,await receipt(t.hash,expected,message),{verified:true});save();console.log(JSON.stringify({step,status:t.status,execution:t.execution,consensus:t.consensus}));
  if(expected==='SUCCESS'&&!t.committed)throw Error('No committed state');return t;
 }
@@ -31,8 +34,9 @@ async function create(f){
  if(p.books[f.name])assert.deepEqual(p.books[f.name],spec);p.books[f.name]=spec;save();return spec;
 }
 async function forge(f){
- const spec=p.books[f.name];await write('forge-'+f.name,'forge',[spec.book_id,spec.input_root,'first'],f.forger);
+ const spec=p.books[f.name],t=await write('forge-'+f.name,'forge',[spec.book_id,spec.input_root,'first'],f.forger);
  const id=digest({book_id:spec.book_id,caller:accounts[f.forger].address,nonce:'first'});
+ if(t.expected_unmet){assert(await denied(p.address,'get_attempt',[id]));assert(await denied(p.address,'get_codebook',[spec.book_id]));t.no_attempt_or_codebook=true;save();return null;}
  const report=await read(p.address,'get_attempt',[id]);checkReport(spec,report,digest);
  if(p.reports[f.name])assert.deepEqual(p.reports[f.name],report);p.reports[f.name]=report;save();
  // Retain an actual REJECTED report and stop. Never silently retry for favorable audits.
@@ -51,5 +55,5 @@ try{
  await forge(fixtures[1]);
  await write('invalid-original','create',['invalid','x'.repeat(161),...fixtures[0].anchors],0,'ERROR','Invalid original proposition');
  assert.equal(p.transactions.length,9);assert(p.transactions.every(t=>t.verified&&t.hash&&!t.broadcast_unknown));
- p.workflow_complete=true;save();console.log(JSON.stringify({workflow_complete:true,address:p.address,transactions:9,published_codebooks:2}));
+ p.workflow_complete=true;save();console.log(JSON.stringify({workflow_complete:true,address:p.address,transactions:9,published_codebooks:Object.keys(p.reports).length,unmet_generation_expectations:p.transactions.filter(t=>t.expected_unmet).length}));
 }catch(e){console.error('Workflow stopped at '+phase+' ('+(e instanceof assert.AssertionError?'assertion':'network/receipt check')+'); inspect journal before retry');process.exitCode=1;}

@@ -35,7 +35,7 @@ export async function read(address,functionName,args){
  if(typeof result!=='string'||!/^(?:0x)?[0-9a-fA-F]*$/.test(result))throw Error('Unexpected read response');
  return jsonSafe(abi.calldata.decode(Uint8Array.from(Buffer.from(result.replace(/^0x/,''),'hex'))));
 }
-export async function receipt(hash,expected='SUCCESS',message){
+export async function receipt(hash,expected='SUCCESS',message,consensus='MAJORITY_AGREE'){
  let tx=await rpc('eth_getTransactionByHash',[hash]);
  const indexed=t=>t.status==='FINALIZED'&&t.result_name&&t.consensus_data?.leader_receipt?.some(x=>x.mode==='leader'&&x.execution_result);
  for(let i=0;!indexed(tx)&&i<30;i++){await new Promise(r=>setTimeout(r,4000));tx=await rpc('eth_getTransactionByHash',[hash]);}
@@ -44,6 +44,11 @@ export async function receipt(hash,expected='SUCCESS',message){
  const decoded=typeof raw!=='string'?'':(/^[A-Za-z0-9+/]*={0,2}$/.test(raw)&&raw.length%4===0?Buffer.from(raw,'base64').toString('utf8'):raw);
  const result={hash,address:tx.to_address??tx.to,status:tx.status,execution:leader?.execution_result,consensus:tx.result_name,
   ...(message?{expected_error_matched:decoded.includes(message)}:{})};
+ if(consensus==='MAJORITY_DISAGREE'){
+  const votes=Object.values(tx.consensus_data?.votes??{});
+  if(expected!=='ERROR'||!message||tx.status!=='FINALIZED'||leader?.execution_result!=='ERROR'||tx.result_name!==consensus||!decoded.includes(message)||tx.leader_only!==false||!Number.isInteger(tx.num_of_initial_validators)||tx.num_of_initial_validators<3||votes.filter(x=>x==='disagree').length<2)throw Error('Failed-generation receipt unverified');
+  return {...result,committed:false,leader_only:false,initial_validators:tx.num_of_initial_validators,agree_votes:votes.filter(x=>x==='agree').length,idle_votes:votes.filter(x=>x==='idle').length,disagree_votes:votes.filter(x=>x==='disagree').length,validator_execution_seen:tx.consensus_data.leader_receipt.some(x=>x.mode==='validator')};
+ }
  if(tx.status==='FINALIZED'&&expected==='SUCCESS'&&leader?.execution_result==='SUCCESS'&&tx.result_name==='MAJORITY_DISAGREE')return {...result,committed:false};
  if(tx.status!=='FINALIZED'||leader?.execution_result!==expected||tx.result_name!=='MAJORITY_AGREE'||(message&&!decoded.includes(message)))throw Error('Receipt unverified');
  const votes=Object.values(tx.consensus_data?.votes??{}),agree=votes.filter(x=>x==='agree').length;

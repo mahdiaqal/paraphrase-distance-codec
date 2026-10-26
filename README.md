@@ -6,6 +6,12 @@ Current policy: **v2**, with two immutable protected phrases from the original a
 
 The previous v1 deployment allowed an explicit “exactly” to disappear and some actor roles to become implicit despite all-PASS audits. Its unmodified candidates, source commit, address and receipts are retained in [history](history/README.md). Regression tests reject those candidates under v2's declared phrase constraints. V1's deployment and receipts are not v2 proofs.
 
+## Current StudioNet deployment
+
+[Explorer contract and source](https://explorer-studio.genlayer.com/address/0xf359D218806d2273E5D76b7cF7a0d9cb6FFADF5a) · [Live proof matrix](LIVE_PROOFS.md) · [Machine-readable ledger](PROOFS.json) · [Submission text](SUBMISSION.md).
+
+Normalized deployed source SHA-256: `335bda1d3dbd18a41ac49be1526737d7d23c721be42110f85c41e1f86a051920`. Nine finalized transactions include four successful writes, four expected rejections and one failed generation with ERROR / MAJORITY_DISAGREE. One alphabet published with measured minimum edit distance 18; four native encoding and sixteen native decoding reads verify its mapping and supported two-edit recovery. The second generation published no attempt or alphabet and was not retried. Its unmet expectation is retained, not counted as successful consensus.
+
 ## Mechanism and boundary
 
 `create(original, two protected phrases)` → permissionless `forge` → AI generates four complete paraphrases → exact phrase/count retention + independent validator fidelity audits + all six pairwise edit distances → immutable published codebook → public `encode` / `decode`.
