@@ -21,14 +21,15 @@ def namespace(gl=None):
 
 NS=namespace()
 ORIGINAL='Rin must get written approval before opening the crate.'
-WORDS=['Rin is required to obtain written approval before opening the crate.',
-       'Before Rin opens the crate, Rin must receive approval in writing.',
-       'Written approval is a prerequisite for Rin to open the crate.',
-       'Rin must not open the crate before Rin has obtained written approval.']
+ANCHORS=['Rin must get written approval','opening the crate']
+WORDS=['Before opening the crate, Rin must get written approval.',
+       'Rin must get written approval prior to opening the crate.',
+       'As a prerequisite to opening the crate, Rin must get written approval.',
+       'Rin must get written approval in advance of opening the crate.']
 PASS=[['PASS']*4 for _ in range(4)]
 
 
-def spec():return dict(book_id='book',input_root='source',original=ORIGINAL)
+def spec():return dict(book_id='book',input_root='source',original=ORIGINAL,anchors=ANCHORS)
 def attempt():return dict(book_id='book',caller='caller',nonce='try',id='attempt')
 
 
@@ -108,13 +109,13 @@ def test_each_of_sixteen_audits_is_consequential():
 
 def deploy(vm,factory,actor):vm.sender=actor;return factory(str(SOURCE))
 def forge(c,vm,book,nonce='try',rows=None,words=None):
-    vm.clear_mocks();vm.mock_llm('.*PARAPHRASE_CODEBOOK_V1.*',json.dumps({'codewords':WORDS if words is None else words}))
-    vm.mock_llm('.*PARAPHRASE_FIDELITY_V1.*',json.dumps({'audits':PASS if rows is None else rows}))
+    vm.clear_mocks();vm.mock_llm('.*PARAPHRASE_CODEBOOK_V2.*',json.dumps({'codewords':WORDS if words is None else words}))
+    vm.mock_llm('.*PARAPHRASE_FIDELITY_V2.*',json.dumps({'audits':PASS if rows is None else rows}))
     return c.forge(book,c.get_book(book)['input_root'],nonce)
 
 
 def test_peer_forges_reusable_encode_decode_with_both_roots_pinned(direct_vm,direct_deploy,direct_alice,direct_bob):
-    c=deploy(direct_vm,direct_deploy,direct_alice);key=c.create('book',ORIGINAL);s=c.get_book(key)
+    c=deploy(direct_vm,direct_deploy,direct_alice);key=c.create('book',ORIGINAL,*ANCHORS);s=c.get_book(key)
     direct_vm.sender=direct_bob
     root=forge(c,direct_vm,key);book=c.get_codebook(key)
     assert root==book['root']
@@ -129,7 +130,7 @@ def test_peer_forges_reusable_encode_decode_with_both_roots_pinned(direct_vm,dir
 
 
 def test_rejected_candidate_retained_but_cannot_encode_and_nonce_cannot_replay(direct_vm,direct_deploy,direct_alice):
-    c=deploy(direct_vm,direct_deploy,direct_alice);key=c.create('book',ORIGINAL);rows=copy.deepcopy(PASS);rows[2][1]='UNKNOWN'
+    c=deploy(direct_vm,direct_deploy,direct_alice);key=c.create('book',ORIGINAL,*ANCHORS);rows=copy.deepcopy(PASS);rows[2][1]='UNKNOWN'
     root=forge(c,direct_vm,key,rows=rows)
     ctx=dict(book_id=key,caller=c.get_book(key)['creator'],nonce='try');ident=NS['digest'](ctx)
     report=c.get_attempt(ident);assert report['root']==root and report['status']=='REJECTED'
@@ -140,9 +141,9 @@ def test_rejected_candidate_retained_but_cannot_encode_and_nonce_cannot_replay(d
 
 
 def test_both_roots_cross_book_and_native_nonce_bindings(direct_vm,direct_deploy,direct_alice,direct_bob):
-    c=deploy(direct_vm,direct_deploy,direct_alice);a=c.create('same',ORIGINAL);b=c.create('second',ORIGINAL)
-    with direct_vm.expect_revert('Nonce already'):c.create('same','A different complete authored proposition.')
-    direct_vm.sender=direct_bob;peer=c.create('same',ORIGINAL);assert peer!=a
+    c=deploy(direct_vm,direct_deploy,direct_alice);a=c.create('same',ORIGINAL,*ANCHORS);b=c.create('second',ORIGINAL,*ANCHORS)
+    with direct_vm.expect_revert('Nonce already'):c.create('same','Rin must get written approval before inspecting the crate.',ANCHORS[0],'inspecting the crate')
+    direct_vm.sender=direct_bob;peer=c.create('same',ORIGINAL,*ANCHORS);assert peer!=a
     sa=c.get_book(a);sb=c.get_book(b)
     with direct_vm.expect_revert('Input root'):c.forge(b,sa['input_root'],'wrong')
     root=forge(c,direct_vm,a)
@@ -153,18 +154,18 @@ def test_both_roots_cross_book_and_native_nonce_bindings(direct_vm,direct_deploy
 
 @pytest.mark.parametrize('value',[-1,4,True])
 def test_symbol_domain(value,direct_vm,direct_deploy,direct_alice):
-    c=deploy(direct_vm,direct_deploy,direct_alice);key=c.create('x',ORIGINAL);root=forge(c,direct_vm,key)
+    c=deploy(direct_vm,direct_deploy,direct_alice);key=c.create('x',ORIGINAL,*ANCHORS);root=forge(c,direct_vm,key)
     with direct_vm.expect_revert('Symbol must'):c.encode(key,c.get_book(key)['input_root'],root,value)
 
 
 @pytest.mark.parametrize('bad',['',' '*20,'é'*20,'a'*161,'line\nbreak text'])
 def test_source_bounds(bad,direct_vm,direct_deploy,direct_alice):
     c=deploy(direct_vm,direct_deploy,direct_alice)
-    with direct_vm.expect_revert('Invalid original'):c.create('bad',bad)
+    with direct_vm.expect_revert('Invalid original'):c.create('bad',bad,*ANCHORS)
 
 
 def test_invalid_generated_distance_or_schema_writes_no_attempt(direct_vm,direct_deploy,direct_alice):
-    c=deploy(direct_vm,direct_deploy,direct_alice);key=c.create('x',ORIGINAL)
+    c=deploy(direct_vm,direct_deploy,direct_alice);key=c.create('x',ORIGINAL,*ANCHORS)
     with direct_vm.expect_revert('LLM_ERROR'):forge(c,direct_vm,key,words=[WORDS[0]]*4)
     ident=NS['digest'](dict(book_id=key,caller=c.get_book(key)['creator'],nonce='try'))
     with direct_vm.expect_revert('Unknown attempt'):c.get_attempt(ident)
@@ -176,14 +177,14 @@ def test_actual_validator_reaudits_substance_and_rejects_rehashed_all_pass_forge
         def __init__(self,value):self.calldata=value
     calls=[]
     def llm(prompt,**kwargs):
-        if prompt.startswith('PARAPHRASE_CODEBOOK_V1'):calls.append('generate');return {'codewords':WORDS}
+        if prompt.startswith('PARAPHRASE_CODEBOOK_V2'):calls.append('generate');return {'codewords':WORDS}
         calls.append('independent-audit');assert ORIGINAL in prompt
         rows=copy.deepcopy(PASS)
-        if 'without any approval' in prompt:rows[0]=['FAIL']*4
+        if 'after opening the crate' in prompt:rows[0]=['FAIL']*4
         return {'audits':rows}
     def run(leader,validator):
         honest=leader();assert validator(Return(honest)) is True
-        wrong=WORDS[:];wrong[0]='Rin can open the crate without any approval.'
+        wrong=WORDS[:];wrong[0]='Rin must get written approval after opening the crate.'
         forged=NS['report_for'](spec(),attempt(),wrong,PASS)
         assert validator(Return(forged)) is False
         forged=copy.deepcopy(honest);forged['input_root']='other-book';forged['root']=NS['digest']({k:v for k,v in forged.items() if k!='root'})
@@ -201,3 +202,24 @@ def test_padding_style_fails_and_exact_original_copy_cannot_publish():
     assert NS['report_for'](spec(),attempt(),words,rows)['status']=='REJECTED'
     words[0]=ORIGINAL
     with pytest.raises(ValueError,match='Exact copies'):NS['report_for'](spec(),attempt(),words,PASS)
+
+
+def test_actual_v1_all_pass_candidates_are_blocked_by_new_literal_guards():
+    old=json.loads((SOURCE.parents[1]/'history/v1-PROOFS.json').read_text())
+    for name,anchors in [('approval',ANCHORS),('quantity',['exactly three','copper disks'])]:
+        prior=old['reports'][name]
+        assert all(x=='PASS' for row in prior['audits'] for x in row)
+        guarded={**old['books'][name],'anchors':anchors}
+        with pytest.raises(ValueError,match='retention'):NS['report_for'](guarded,prior['attempt'],prior['codewords'],PASS)
+
+
+@pytest.mark.parametrize('anchors',[['absent phrase','written approval'],['Rin must','Rin must'],['Rin must',''],[ORIGINAL,'written approval']])
+def test_invalid_anchors_cannot_register(anchors,direct_vm,direct_deploy,direct_alice):
+    c=deploy(direct_vm,direct_deploy,direct_alice)
+    with direct_vm.expect_revert('Invalid protected'):c.create('bad',ORIGINAL,*anchors)
+
+
+def test_repeating_or_dropping_anchor_rejected_even_with_all_pass():
+    for changed in [WORDS[0].replace('written approval','approval'),WORDS[0]+' '+ANCHORS[0]]:
+        words=WORDS[:];words[0]=changed
+        with pytest.raises(ValueError,match='retention'):NS['report_for'](spec(),attempt(),words,PASS)

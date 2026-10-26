@@ -15,8 +15,12 @@ export function checkReport(spec,report,digest){
  const pairs=[];for(let i=0;i<4;i++)for(let j=i+1;j<4;j++)pairs.push({left:i,right:j,distance:distance(words[i],words[j])});
  assert(pairs.every(p=>p.distance>=5));
  assert.equal(attempt.book_id,spec.book_id);assert.equal(attempt.id,digest({book_id:spec.book_id,caller:attempt.caller,nonce:attempt.nonce}));
- const value={policy:'paraphrase-distance-codec-v1',book_id:spec.book_id,input_root:spec.input_root,attempt,codewords:words,
+ const expectedCounts=spec.anchors.map(a=>spec.original.split(a).length-1);
+ const observedCounts=words.map(w=>spec.anchors.map(a=>w.split(a).length-1));
+ assert(observedCounts.every(row=>row.every((n,i)=>n===expectedCounts[i])));
+ const value={policy:'paraphrase-distance-codec-v2',book_id:spec.book_id,input_root:spec.input_root,attempt,codewords:words,
   dimensions:['EQUIVALENCE','CRITICAL_DETAILS','NO_ADDITIONS','NATURAL_REPHRASING'],audits:rows,pair_distances:pairs,
+  protected_phrases:{anchors:spec.anchors,expected_counts:expectedCounts,observed_counts:observedCounts},
   minimum_distance:Math.min(...pairs.map(p=>p.distance)),correction_radius:2,alphabet:'PRINTABLE_ASCII',symbol_count:4,
   status:rows.every(r=>r.every(x=>x==='PASS'))?'PUBLISHED':'REJECTED'};
  value.root=digest(value);assert.deepEqual(report,value);return true;

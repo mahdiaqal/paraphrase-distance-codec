@@ -10,7 +10,7 @@ for(const t of p.transactions){
 p.source=await source(p.address);p.native_roundtrips=[];p.consumer_rejections=[];
 for(const f of p.fixtures){
  const spec=await read(p.address,'get_book',[p.books[f.name].book_id]);assert.deepEqual(spec,p.books[f.name]);
- assert.equal(spec.contract,p.address);assert.equal(spec.creator,p.accounts[f.creator].address);assert.equal(spec.nonce,f.nonce);assert.equal(spec.original,f.original);
+ assert.equal(spec.contract,p.address);assert.equal(spec.creator,p.accounts[f.creator].address);assert.equal(spec.nonce,f.nonce);assert.equal(spec.original,f.original);assert.deepEqual(spec.anchors,f.anchors);
  assert.equal(spec.book_id,digest({contract:p.address,creator:spec.creator,nonce:f.nonce}));assert.equal(spec.input_root,digest(Object.fromEntries(Object.entries(spec).filter(([k])=>k!=='input_root'))));
  const report=await read(p.address,'get_codebook',[spec.book_id]);assert.deepEqual(report,p.reports[f.name]);checkReport(spec,report,digest);assert.equal(report.status,'PUBLISHED');
  assert.equal(report.attempt.caller,p.accounts[f.forger].address);assert.equal(report.attempt.nonce,'first');assert.deepEqual(await read(p.address,'get_attempt',[report.attempt.id]),report);

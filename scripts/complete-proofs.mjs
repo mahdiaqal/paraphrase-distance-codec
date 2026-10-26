@@ -2,8 +2,8 @@ import fs from 'node:fs';import {spawn} from 'node:child_process';import assert 
 import {rpc,receipt,source,read,digest} from './check.mjs';import {checkReport} from './reference.mjs';
 const accounts=[{name:'studio-proof-deployer',address:getAddress('0x7a413bb4ab62e31d62d4cd9efc8c8a8dae37fb42')},
  {name:'fairresolve-demo',address:getAddress('0x34346773a22564cbcc5f1d67d1c1f9f196daea35')}];
-const fixtures=[{name:'approval',nonce:'channel',original:'Rin must get written approval before opening the crate.',creator:0,forger:1},
- {name:'quantity',nonce:'channel',original:'The sample contains exactly three copper disks.',creator:1,forger:0}];
+const fixtures=[{name:'approval',nonce:'channel',original:'Rin must get written approval before opening the crate.',anchors:['Rin must get written approval','opening the crate'],creator:0,forger:1},
+ {name:'quantity',nonce:'channel',original:'The sample contains exactly three copper disks.',anchors:['exactly three','copper disks'],creator:1,forger:0}];
 const file='PROOFS.json',commit=process.argv[2];assert(/^[0-9a-f]{40}$/.test(commit??''),'Supply published source commit');
 const p=fs.existsSync(file)?JSON.parse(fs.readFileSync(file,'utf8')):{network:'studionet',chain_id:61999,source_commit:commit,accounts,fixtures,transactions:[],books:{},reports:{}};
 assert.equal(p.source_commit,commit);const save=()=>fs.writeFileSync(file,JSON.stringify(p,null,2)+'\n');p.final_readback_verified=false;save();let phase='preflight';
@@ -25,9 +25,9 @@ async function tx(step,args,who=0,expected='SUCCESS',message){
 }
 const write=(step,method,args,who=0,expected='SUCCESS',message)=>tx(step,['write',p.address,method,'--args',...args.map(String)],who,expected,message);
 async function create(f){
- await write('create-'+f.name,'create',[f.nonce,f.original],f.creator);
+ await write('create-'+f.name,'create',[f.nonce,f.original,...f.anchors],f.creator);
  const id=digest({contract:p.address,creator:accounts[f.creator].address,nonce:f.nonce});
- const spec=await read(p.address,'get_book',[id]);assert.equal(spec.original,f.original);assert.equal(spec.book_id,id);
+ const spec=await read(p.address,'get_book',[id]);assert.equal(spec.original,f.original);assert.equal(spec.book_id,id);assert.deepEqual(spec.anchors,f.anchors);
  if(p.books[f.name])assert.deepEqual(p.books[f.name],spec);p.books[f.name]=spec;save();return spec;
 }
 async function forge(f){
@@ -45,11 +45,11 @@ try{
  p.address=deployment.address;p.source=await source(p.address);save();
  const a=await create(fixtures[0]);await forge(fixtures[0]);
  await write('immutable-alphabet','forge',[a.book_id,a.input_root,'again'],0,'ERROR','Codebook already published');
- await write('creator-nonce-replay','create',[fixtures[0].nonce,fixtures[1].original],0,'ERROR','Nonce already used');
+ await write('creator-nonce-replay','create',[fixtures[0].nonce,fixtures[1].original,...fixtures[1].anchors],0,'ERROR','Nonce already used');
  const b=await create(fixtures[1]);assert.notEqual(a.book_id,b.book_id);
  await write('cross-book-input','forge',[b.book_id,a.input_root,'wrong-context'],0,'ERROR','Input root mismatch');
  await forge(fixtures[1]);
- await write('invalid-original','create',['invalid','x'.repeat(161)],0,'ERROR','Invalid original proposition');
+ await write('invalid-original','create',['invalid','x'.repeat(161),...fixtures[0].anchors],0,'ERROR','Invalid original proposition');
  assert.equal(p.transactions.length,9);assert(p.transactions.every(t=>t.verified&&t.hash&&!t.broadcast_unknown));
  p.workflow_complete=true;save();console.log(JSON.stringify({workflow_complete:true,address:p.address,transactions:9,published_codebooks:2}));
 }catch(e){console.error('Workflow stopped at '+phase+' ('+(e instanceof assert.AssertionError?'assertion':'network/receipt check')+'); inspect journal before retry');process.exitCode=1;}

@@ -1,0 +1,498 @@
+{
+  "network": "studionet",
+  "chain_id": 61999,
+  "source_commit": "153ad38cdfd77f09196de309d7f8af1bd5f22877",
+  "accounts": [
+    {
+      "name": "studio-proof-deployer",
+      "address": "0x7a413BB4AB62E31d62d4cD9efC8C8a8Dae37FB42"
+    },
+    {
+      "name": "fairresolve-demo",
+      "address": "0x34346773a22564cbcc5F1D67D1c1F9f196DaEA35"
+    }
+  ],
+  "fixtures": [
+    {
+      "name": "approval",
+      "nonce": "channel",
+      "original": "Rin must get written approval before opening the crate.",
+      "creator": 0,
+      "forger": 1
+    },
+    {
+      "name": "quantity",
+      "nonce": "channel",
+      "original": "The sample contains exactly three copper disks.",
+      "creator": 1,
+      "forger": 0
+    }
+  ],
+  "transactions": [
+    {
+      "step": "deploy",
+      "signer": "0x7a413BB4AB62E31d62d4cD9efC8C8a8Dae37FB42",
+      "expected": "SUCCESS",
+      "cli_arguments": [
+        "deploy",
+        "--contract",
+        "contracts/ParaphraseDistanceCodec.py"
+      ],
+      "nonce_before": "0x1bd",
+      "verified": true,
+      "hash": "0x9ac543dcfdf8c66a966728deb2f2af1a0c757a7f091587c8e289c30c979f78f4",
+      "cli_exit": 0,
+      "address": "0x2BE0A600Eb4165F2F370F15e27B494d18cAc0b4C",
+      "status": "FINALIZED",
+      "execution": "SUCCESS",
+      "consensus": "MAJORITY_AGREE",
+      "committed": true,
+      "leader_only": false,
+      "initial_validators": 5,
+      "agree_votes": 5,
+      "idle_votes": 0,
+      "disagree_votes": 0,
+      "validator_execution_seen": true
+    },
+    {
+      "step": "create-approval",
+      "signer": "0x7a413BB4AB62E31d62d4cD9efC8C8a8Dae37FB42",
+      "expected": "SUCCESS",
+      "cli_arguments": [
+        "write",
+        "0x2BE0A600Eb4165F2F370F15e27B494d18cAc0b4C",
+        "create",
+        "--args",
+        "channel",
+        "Rin must get written approval before opening the crate."
+      ],
+      "nonce_before": "0x1be",
+      "verified": true,
+      "hash": "0x256f5392450aae86c1e8a31929253936fc20fbc448708d8df39c6546a4a362ea",
+      "cli_exit": 0,
+      "address": "0x2BE0A600Eb4165F2F370F15e27B494d18cAc0b4C",
+      "status": "FINALIZED",
+      "execution": "SUCCESS",
+      "consensus": "MAJORITY_AGREE",
+      "committed": true,
+      "leader_only": false,
+      "initial_validators": 5,
+      "agree_votes": 3,
+      "idle_votes": 2,
+      "disagree_votes": 0,
+      "validator_execution_seen": true
+    },
+    {
+      "step": "forge-approval",
+      "signer": "0x34346773a22564cbcc5F1D67D1c1F9f196DaEA35",
+      "expected": "SUCCESS",
+      "cli_arguments": [
+        "write",
+        "0x2BE0A600Eb4165F2F370F15e27B494d18cAc0b4C",
+        "forge",
+        "--args",
+        "3f544fe8ede47555adf1be79bf562a89f4d09a339f092e15c78a92f23bb2f920",
+        "5e06628c24362d927fb287112b85fcca2ee4bed8171d76112944db7103798481",
+        "first"
+      ],
+      "nonce_before": "0x2f",
+      "verified": true,
+      "hash": "0xfc058ee752d8d45b7ba7c894a2229e6ff79c0df3331d102d2084485844ea7993",
+      "cli_exit": 0,
+      "address": "0x2BE0A600Eb4165F2F370F15e27B494d18cAc0b4C",
+      "status": "FINALIZED",
+      "execution": "SUCCESS",
+      "consensus": "MAJORITY_AGREE",
+      "committed": true,
+      "leader_only": false,
+      "initial_validators": 5,
+      "agree_votes": 3,
+      "idle_votes": 2,
+      "disagree_votes": 0,
+      "validator_execution_seen": true
+    },
+    {
+      "step": "immutable-alphabet",
+      "signer": "0x7a413BB4AB62E31d62d4cD9efC8C8a8Dae37FB42",
+      "expected": "ERROR",
+      "cli_arguments": [
+        "write",
+        "0x2BE0A600Eb4165F2F370F15e27B494d18cAc0b4C",
+        "forge",
+        "--args",
+        "3f544fe8ede47555adf1be79bf562a89f4d09a339f092e15c78a92f23bb2f920",
+        "5e06628c24362d927fb287112b85fcca2ee4bed8171d76112944db7103798481",
+        "again"
+      ],
+      "nonce_before": "0x1bf",
+      "verified": true,
+      "expected_message": "Codebook already published",
+      "hash": "0xab207ae420b4dcdefe2aa1f846183bec0c93585182e5d0d8a95f5fa9f9b29c53",
+      "cli_exit": 0,
+      "address": "0x2BE0A600Eb4165F2F370F15e27B494d18cAc0b4C",
+      "status": "FINALIZED",
+      "execution": "ERROR",
+      "consensus": "MAJORITY_AGREE",
+      "expected_error_matched": true,
+      "committed": false,
+      "leader_only": false,
+      "initial_validators": 5,
+      "agree_votes": 5,
+      "idle_votes": 0,
+      "disagree_votes": 0,
+      "validator_execution_seen": true
+    },
+    {
+      "step": "creator-nonce-replay",
+      "signer": "0x7a413BB4AB62E31d62d4cD9efC8C8a8Dae37FB42",
+      "expected": "ERROR",
+      "cli_arguments": [
+        "write",
+        "0x2BE0A600Eb4165F2F370F15e27B494d18cAc0b4C",
+        "create",
+        "--args",
+        "channel",
+        "The sample contains exactly three copper disks."
+      ],
+      "nonce_before": "0x1c0",
+      "verified": true,
+      "expected_message": "Nonce already used",
+      "hash": "0x2cb775803d2c4f76f56e56c23e8c5d66ceeecd72d06922125b37b8c813812560",
+      "cli_exit": 0,
+      "address": "0x2BE0A600Eb4165F2F370F15e27B494d18cAc0b4C",
+      "status": "FINALIZED",
+      "execution": "ERROR",
+      "consensus": "MAJORITY_AGREE",
+      "expected_error_matched": true,
+      "committed": false,
+      "leader_only": false,
+      "initial_validators": 5,
+      "agree_votes": 3,
+      "idle_votes": 2,
+      "disagree_votes": 0,
+      "validator_execution_seen": true
+    },
+    {
+      "step": "create-quantity",
+      "signer": "0x34346773a22564cbcc5F1D67D1c1F9f196DaEA35",
+      "expected": "SUCCESS",
+      "cli_arguments": [
+        "write",
+        "0x2BE0A600Eb4165F2F370F15e27B494d18cAc0b4C",
+        "create",
+        "--args",
+        "channel",
+        "The sample contains exactly three copper disks."
+      ],
+      "nonce_before": "0x30",
+      "verified": true,
+      "hash": "0xe1847d09031c4f71f68a66bc863461c0047889c2a200267541f94725866c0052",
+      "cli_exit": 0,
+      "address": "0x2BE0A600Eb4165F2F370F15e27B494d18cAc0b4C",
+      "status": "FINALIZED",
+      "execution": "SUCCESS",
+      "consensus": "MAJORITY_AGREE",
+      "committed": true,
+      "leader_only": false,
+      "initial_validators": 5,
+      "agree_votes": 3,
+      "idle_votes": 2,
+      "disagree_votes": 0,
+      "validator_execution_seen": true
+    },
+    {
+      "step": "cross-book-input",
+      "signer": "0x7a413BB4AB62E31d62d4cD9efC8C8a8Dae37FB42",
+      "expected": "ERROR",
+      "cli_arguments": [
+        "write",
+        "0x2BE0A600Eb4165F2F370F15e27B494d18cAc0b4C",
+        "forge",
+        "--args",
+        "77dbb5e5e352c5cea69029fd679bdb268cc0195b59006946b79ff5c39ae999e3",
+        "5e06628c24362d927fb287112b85fcca2ee4bed8171d76112944db7103798481",
+        "wrong-context"
+      ],
+      "nonce_before": "0x1c1",
+      "verified": true,
+      "expected_message": "Input root mismatch",
+      "hash": "0xaf5e093aeb3e2d848ccf38a1a212488e820c8208bf6d1bd1fddc5e5140e9c658",
+      "cli_exit": 0,
+      "address": "0x2BE0A600Eb4165F2F370F15e27B494d18cAc0b4C",
+      "status": "FINALIZED",
+      "execution": "ERROR",
+      "consensus": "MAJORITY_AGREE",
+      "expected_error_matched": true,
+      "committed": false,
+      "leader_only": false,
+      "initial_validators": 5,
+      "agree_votes": 3,
+      "idle_votes": 2,
+      "disagree_votes": 0,
+      "validator_execution_seen": true
+    },
+    {
+      "step": "forge-quantity",
+      "signer": "0x7a413BB4AB62E31d62d4cD9efC8C8a8Dae37FB42",
+      "expected": "SUCCESS",
+      "cli_arguments": [
+        "write",
+        "0x2BE0A600Eb4165F2F370F15e27B494d18cAc0b4C",
+        "forge",
+        "--args",
+        "77dbb5e5e352c5cea69029fd679bdb268cc0195b59006946b79ff5c39ae999e3",
+        "c724e797f8cdebf5dc7782b37d3b13f654d92ab91c9da438434477fe2a414824",
+        "first"
+      ],
+      "nonce_before": "0x1c2",
+      "verified": true,
+      "hash": "0xdee03062b6d8719b20e7193001e8476d7b052c82ab983f4756e1555e5249a041",
+      "cli_exit": 0,
+      "address": "0x2BE0A600Eb4165F2F370F15e27B494d18cAc0b4C",
+      "status": "FINALIZED",
+      "execution": "SUCCESS",
+      "consensus": "MAJORITY_AGREE",
+      "committed": true,
+      "leader_only": false,
+      "initial_validators": 5,
+      "agree_votes": 3,
+      "idle_votes": 2,
+      "disagree_votes": 0,
+      "validator_execution_seen": true
+    },
+    {
+      "step": "invalid-original",
+      "signer": "0x7a413BB4AB62E31d62d4cD9efC8C8a8Dae37FB42",
+      "expected": "ERROR",
+      "cli_arguments": [
+        "write",
+        "0x2BE0A600Eb4165F2F370F15e27B494d18cAc0b4C",
+        "create",
+        "--args",
+        "invalid",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      ],
+      "nonce_before": "0x1c3",
+      "verified": true,
+      "expected_message": "Invalid original proposition",
+      "hash": "0x9685a24016bd5bcb5380cb767f7f5e081836a94b1e104e76c173fc709b7a2418",
+      "cli_exit": 0,
+      "address": "0x2BE0A600Eb4165F2F370F15e27B494d18cAc0b4C",
+      "status": "FINALIZED",
+      "execution": "ERROR",
+      "consensus": "MAJORITY_AGREE",
+      "expected_error_matched": true,
+      "committed": false,
+      "leader_only": false,
+      "initial_validators": 5,
+      "agree_votes": 3,
+      "idle_votes": 2,
+      "disagree_votes": 0,
+      "validator_execution_seen": true
+    }
+  ],
+  "books": {
+    "approval": {
+      "book_id": "3f544fe8ede47555adf1be79bf562a89f4d09a339f092e15c78a92f23bb2f920",
+      "contract": "0x2BE0A600Eb4165F2F370F15e27B494d18cAc0b4C",
+      "creator": "0x7a413BB4AB62E31d62d4cD9efC8C8a8Dae37FB42",
+      "input_root": "5e06628c24362d927fb287112b85fcca2ee4bed8171d76112944db7103798481",
+      "nonce": "channel",
+      "original": "Rin must get written approval before opening the crate.",
+      "policy": "paraphrase-distance-codec-v1"
+    },
+    "quantity": {
+      "book_id": "77dbb5e5e352c5cea69029fd679bdb268cc0195b59006946b79ff5c39ae999e3",
+      "contract": "0x2BE0A600Eb4165F2F370F15e27B494d18cAc0b4C",
+      "creator": "0x34346773a22564cbcc5F1D67D1c1F9f196DaEA35",
+      "input_root": "c724e797f8cdebf5dc7782b37d3b13f654d92ab91c9da438434477fe2a414824",
+      "nonce": "channel",
+      "original": "The sample contains exactly three copper disks.",
+      "policy": "paraphrase-distance-codec-v1"
+    }
+  },
+  "reports": {
+    "approval": {
+      "alphabet": "PRINTABLE_ASCII",
+      "attempt": {
+        "book_id": "3f544fe8ede47555adf1be79bf562a89f4d09a339f092e15c78a92f23bb2f920",
+        "caller": "0x34346773a22564cbcc5F1D67D1c1F9f196DaEA35",
+        "id": "90c6cffb6ccd00d2f6546b0ec58c734cdfe8c7774637029fd357bdd26040b9d9",
+        "nonce": "first"
+      },
+      "audits": [
+        [
+          "PASS",
+          "PASS",
+          "PASS",
+          "PASS"
+        ],
+        [
+          "PASS",
+          "PASS",
+          "PASS",
+          "PASS"
+        ],
+        [
+          "PASS",
+          "PASS",
+          "PASS",
+          "PASS"
+        ],
+        [
+          "PASS",
+          "PASS",
+          "PASS",
+          "PASS"
+        ]
+      ],
+      "book_id": "3f544fe8ede47555adf1be79bf562a89f4d09a339f092e15c78a92f23bb2f920",
+      "codewords": [
+        "Rin needs written approval prior to opening the crate.",
+        "Before Rin opens the crate, written approval is required.",
+        "Opening the crate requires Rin to first obtain written approval.",
+        "Written approval must be secured by Rin before the crate is opened."
+      ],
+      "correction_radius": 2,
+      "dimensions": [
+        "EQUIVALENCE",
+        "CRITICAL_DETAILS",
+        "NO_ADDITIONS",
+        "NATURAL_REPHRASING"
+      ],
+      "input_root": "5e06628c24362d927fb287112b85fcca2ee4bed8171d76112944db7103798481",
+      "minimum_distance": 43,
+      "pair_distances": [
+        {
+          "distance": 43,
+          "left": 0,
+          "right": 1
+        },
+        {
+          "distance": 47,
+          "left": 0,
+          "right": 2
+        },
+        {
+          "distance": 46,
+          "left": 0,
+          "right": 3
+        },
+        {
+          "distance": 49,
+          "left": 1,
+          "right": 2
+        },
+        {
+          "distance": 50,
+          "left": 1,
+          "right": 3
+        },
+        {
+          "distance": 50,
+          "left": 2,
+          "right": 3
+        }
+      ],
+      "policy": "paraphrase-distance-codec-v1",
+      "root": "11c0d875e627a01755df20fb31800d2757287af94067a70e1930fb9686eb67c2",
+      "status": "PUBLISHED",
+      "symbol_count": 4
+    },
+    "quantity": {
+      "alphabet": "PRINTABLE_ASCII",
+      "attempt": {
+        "book_id": "77dbb5e5e352c5cea69029fd679bdb268cc0195b59006946b79ff5c39ae999e3",
+        "caller": "0x7a413BB4AB62E31d62d4cD9efC8C8a8Dae37FB42",
+        "id": "aeb358f28951636358cacc589b32e3b777c237323b4dafcb6f6b25b5c839264a",
+        "nonce": "first"
+      },
+      "audits": [
+        [
+          "PASS",
+          "PASS",
+          "PASS",
+          "PASS"
+        ],
+        [
+          "PASS",
+          "PASS",
+          "PASS",
+          "PASS"
+        ],
+        [
+          "PASS",
+          "PASS",
+          "PASS",
+          "PASS"
+        ],
+        [
+          "PASS",
+          "PASS",
+          "PASS",
+          "PASS"
+        ]
+      ],
+      "book_id": "77dbb5e5e352c5cea69029fd679bdb268cc0195b59006946b79ff5c39ae999e3",
+      "codewords": [
+        "Three copper disks are contained within the sample.",
+        "Within the sample are precisely three disks made of copper.",
+        "The sample holds a total of exactly three disks composed of copper.",
+        "Precisely three disks fabricated from copper are present in the sample."
+      ],
+      "correction_radius": 2,
+      "dimensions": [
+        "EQUIVALENCE",
+        "CRITICAL_DETAILS",
+        "NO_ADDITIONS",
+        "NATURAL_REPHRASING"
+      ],
+      "input_root": "c724e797f8cdebf5dc7782b37d3b13f654d92ab91c9da438434477fe2a414824",
+      "minimum_distance": 33,
+      "pair_distances": [
+        {
+          "distance": 45,
+          "left": 0,
+          "right": 1
+        },
+        {
+          "distance": 48,
+          "left": 0,
+          "right": 2
+        },
+        {
+          "distance": 39,
+          "left": 0,
+          "right": 3
+        },
+        {
+          "distance": 33,
+          "left": 1,
+          "right": 2
+        },
+        {
+          "distance": 53,
+          "left": 1,
+          "right": 3
+        },
+        {
+          "distance": 57,
+          "left": 2,
+          "right": 3
+        }
+      ],
+      "policy": "paraphrase-distance-codec-v1",
+      "root": "029b186ba6c257dbed2a42237bc4bde94e0a1016876e2d1404eca260efa5c128",
+      "status": "PUBLISHED",
+      "symbol_count": 4
+    }
+  },
+  "final_readback_verified": false,
+  "address": "0x2BE0A600Eb4165F2F370F15e27B494d18cAc0b4C",
+  "source": {
+    "address": "0x2BE0A600Eb4165F2F370F15e27B494d18cAc0b4C",
+    "source_match": true,
+    "sha256": "a5976a94774ba655a53d00f63ade90823fbdca0ba3301a0bc216d2ece0d2a9f0"
+  },
+  "workflow_complete": true
+}

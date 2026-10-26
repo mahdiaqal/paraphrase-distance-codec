@@ -1,10 +1,14 @@
 # ParaphraseDistanceCodec
 
-Experimental GenLayer **consensus-audited prose codebooks with bounded edit correction**. Four equivalent paraphrases of one authored proposition carry four symbols (two bits per carrier). The contract generates the codebook, audits its meaning and exposes reusable, root-bound encoding and decoding.
+Experimental GenLayer **consensus-audited prose codebooks with bounded edit correction**. Four model-audited paraphrases of one authored proposition carry four symbols (two bits per carrier). The contract generates the codebook, audits its meaning and exposes reusable, root-bound encoding and decoding.
+
+Current policy: **v2**, with two immutable protected phrases from the original and deterministic verbatim occurrence-count checks in every codeword. Model approval cannot bypass a missing, changed or repeated protected phrase. These lexical constraints supplement the independent semantic audits; they do not prove unprotected meaning or relationships.
+
+The previous v1 deployment allowed an explicit “exactly” to disappear and some actor roles to become implicit despite all-PASS audits. Its unmodified candidates, source commit, address and receipts are retained in [history](history/README.md). Regression tests reject those candidates under v2's declared phrase constraints. V1's deployment and receipts are not v2 proofs.
 
 ## Mechanism and boundary
 
-`create(original)` → permissionless `forge` → AI generates four complete paraphrases → independent validator fidelity audits + all six pairwise edit distances → immutable published codebook → public `encode` / `decode`.
+`create(original, two protected phrases)` → permissionless `forge` → AI generates four complete paraphrases → exact phrase/count retention + independent validator fidelity audits + all six pairwise edit distances → immutable published codebook → public `encode` / `decode`.
 
 The nondeterministic output is the actual four-string alphabet. Callers cannot provide codewords or fidelity verdicts. Validators independently audit those exact candidates against the **full original text**, checking both-direction equivalence, critical actors/quantities/negations/modalities/conditions/exceptions, absence of additions and genuine natural rephrasing. Padding, tags, repeated text and formatting-only tricks fail the rephrasing audit; exact original copies are also rejected deterministically. All sixteen PASS/FAIL/UNKNOWN labels and the complete reconstructed report must match. Only all-PASS reports publish; other agreed audits are retained as REJECTED without a usable codebook. Malformed generation/audits revert and write nothing.
 
@@ -20,13 +24,13 @@ Edits are insertion, deletion or substitution of **printable ASCII characters**.
 
 ## Roots, identity and reuse
 
-- The original is immutable and contract/native-creator/nonce-bound.
+- The original and its two protected phrases are immutable and contract/native-creator/nonce-bound. Each phrase is a distinct 3–80 character literal span from the original, shorter than the entire original. All candidates must retain each span verbatim, including case/spacing, exactly as many times as the original. Phrase selection is an authored constraint, not a claim that it covers every critical semantic feature.
 - Anyone may forge it, with an immutable native-caller/attempt nonce. The creator has no approval step or later veto.
 - Agreed REJECTED attempts remain readable. A new attempt may search for different codewords satisfying the same original; a published alphabet cannot be replaced or permuted.
 - **Both the original input root and exact codebook root are mandatory** for encoding/decoding. Equivalent sentences can be ordered differently in another alphabet; input-root-only binding would not identify the symbol mapping.
 - Four symbols, six pair distances, sixteen audits and a bounded four-candidate decoder. No arbitrary code, network source acquisition or financial operation.
 
-API: `create(nonce,original)`, `get_book`, `forge(book_id,input_root,attempt_nonce)`, `get_attempt`, `get_codebook`, `encode(book_id,input_root,codebook_root,symbol)`, `decode(book_id,input_root,codebook_root,carrier)`.
+API: `create(nonce,original,anchor_a,anchor_b)`, `get_book`, `forge(book_id,input_root,attempt_nonce)`, `get_attempt`, `get_codebook`, `encode(book_id,input_root,codebook_root,symbol)`, `decode(book_id,input_root,codebook_root,carrier)`.
 
 ## Reproduce checks
 
@@ -39,7 +43,7 @@ node --test tests/reference.test.mjs
 node scripts/sdk-check.mjs
 ```
 
-The independent edit-graph oracle checks all 961 short-string pairs. A minimum-distance-five synthetic alphabet is checked on all 7,253 symbol/carrier pairs reachable by up to two edits over a reduced alphabet. This finite test supplements the general triangle-inequality argument; it is not exhaustive testing over every printable-ASCII string. Direct and actual-callback tests exercise all sixteen audit positions, rehashed false fidelity reports, exact-copy/padding rejection, failed generation, immutable publication, rejected-attempt replay, cross-book roots, both required consumer roots and repeated public use. Direct mode alone does not establish distributed consensus. The Windows cleanup fixture defers only gltest's open-temporary-file `WinError 32` unlink; contract failures remain visible.
+37 Python direct/helper/callback + 3 independent JavaScript tests pass, with seven SDK roundtrips. The independent edit-graph oracle checks all 961 short-string pairs. A minimum-distance-five synthetic alphabet is checked on all 7,253 symbol/carrier pairs reachable by up to two edits over a reduced alphabet. This finite test supplements the general triangle-inequality argument; it is not exhaustive testing over every printable-ASCII string. Tests exercise all sixteen audit positions, rehashed false fidelity reports, exact-copy/padding rejection, failed generation, immutable publication, rejected-attempt replay, cross-book roots, both required consumer roots and repeated public use. Actual v1 omissions fail the v2 phrase guards even with all-PASS labels. A wrong before/after relationship retaining both protected phrases still fails the substantive validator callback. Direct mode alone does not establish distributed consensus. The Windows cleanup fixture defers only gltest's open-temporary-file `WinError 32` unlink; contract failures remain visible.
 
 ## Deployment discipline and related work
 
